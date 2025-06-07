@@ -1,0 +1,48 @@
+html, body {
+    height: 100%;
+}
+#content {
+    height: 100%
+}
+#menu {
+    position: top;
+    border-top: 3px solid;
+    border-bottom: 3px solid;
+    height: 5%;
+    min-height: 20px;
+    align-content: center;
+}
+#menu1 {
+    display: inline-block;
+}
+#menu2 {
+    display: inline-block;
+}
+#list {
+    display: inline-block;
+    padding: 10px;
+    vertical-align: top;
+    min-height: 80%;
+}
+#main {
+    display: inline-block;
+    padding: 10px;
+    border-left : 3px solid;
+    vertical-align: top;
+    min-height: 80%;
+}
+#footer {
+    border-top: 3px solid;
+    height: 5%;
+    min-height: 20px;
+}
+input {
+    background: none;
+    border:none;
+}
+.item-list-template {
+}
+.item-field-name {   
+}
+.item-field-value {
+}
