@@ -103,15 +103,33 @@ class MyDB extends SQLite3
 //Create objectdb
 $db = new MyDB();
 
+if (isset($_POST['username']) && isset($_POST['password'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $_SESSION['logged']=false;
+    
+    if ($res = $db->checkUser($username, $password)) {
+        $row = $db->getNextRow($res);
+        if (isset($row['ID'])) {
+            $_SESSION['logged']=true;
+            $_SESSION['user_id']=$row['ID'];
+        }
+    }
+    $db->finalize($res);
+}
+
 //Data functions
 if (isset($_POST['add-template']) && isset($_POST['template_name'])) {
     $db->insertTemplate($_SESSION['user_id'],$_POST['template_name']);
+    $db->finalize($res);
 }
 elseif (isset($_POST['add-section']) && isset($_POST['template_id']) && isset($_POST['section_name'])) {
     $db->insertSection($_POST['template_id'],$_SESSION['user_id'],$_POST['section_name']);
+    $db->finalize($res);
 }
 elseif (isset($_POST['add-field']) && isset($_POST['template_id']) && isset($_POST['section_id']) && isset($_POST['field_name'])) {
     $db->insertField($_POST['section_id'],$_POST['template_id'],$_SESSION['user_id'],$_POST['field_name'],$_POST['field_default']);
+    $db->finalize($res);
 }
 elseif (isset($_POST['select-template'])) {
     $_SESSION['template_id'] = $_POST['select-template'];
