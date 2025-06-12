@@ -9,4 +9,14 @@ while ($template = $db->getNextRow($templates)) {
         </form>
         </div> <?php
 }
+
+<div id="add-template">
+    <form method="post">
+    <label><b>Templated</b></label>
+    <input type="text" placeholder="Enter template name" name="template_name" required>
+    <input type="hidden" name="add-template">
+    <button type="submit">Add</button>
+    </form>
+    </div>
+
 ?>

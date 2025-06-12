@@ -18,7 +18,7 @@ if(isset($_SESSION['template_id'])) {
         }
         $db->finalize($fields);
         ?>
-            <div name="add-field">
+            <div id="add-field">
                  <form method="post">
                  <input type="text" placeholder="Enter field name" name="field_name" required>
                  <input type="text" placeholder="enter default value" name="field_default" >
@@ -32,7 +32,7 @@ if(isset($_SESSION['template_id'])) {
                  }
     $db->finalize($sections);
         ?>
-        <div name="add-section">
+        <div id="add-section">
              <form method="post">
              <input type="text" placeholder="Enter section name" name="section_name" required>
              <input type="hidden" name="template_id" value="<?php echo $template['ID'] ?>">             
@@ -45,12 +45,4 @@ if(isset($_SESSION['template_id'])) {
 $db->finalize($templates);
     
 ?>
-    <div name="add-template">
-    <form method="post">
-    <label><b>Templated</b></label>
-    <input type="text" placeholder="Enter template name" name="template_name" required>
-    <input type="hidden" name="add-template">
-    <button type="submit">Add</button>
-    </form>
-    </div>
     
