@@ -18,6 +18,10 @@ html, body {
 #menu2 {
     display: inline-block;
 }
+#login {
+    hieght: 100%;
+    vertical-align: center;
+}
 #list {
     display: inline-block;
     padding: 10px;
@@ -36,13 +40,32 @@ html, body {
     height: 5%;
     min-height: 20px;
 }
+.item-section {
+    background: light-grey;
+    broder: none;
+}
+.item-field-name {
+    display: inline-block;
+    border-left: 10px;
+}
+.item-field-value {
+    display: inline-block;
+}
+.item-list-template {
+    
+}
+.add-section {
+}
+.add-field {
+    border-left: 10px;
+}
+.add-section {
+    broder-left: 10px;
+}
+.add-template {
+    
+}
 input {
     background: none;
     border:none;
-}
-.item-list-template {
-}
-.item-field-name {   
-}
-.item-field-value {
 }

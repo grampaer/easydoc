@@ -1,4 +1,5 @@
-<?php
+
+    <?php
 
 // Generate list of templates / sections / fields
 if(isset($_SESSION['template_id'])) {
@@ -18,7 +19,7 @@ if(isset($_SESSION['template_id'])) {
         }
         $db->finalize($fields);
         ?>
-            <div id="add-field">
+            <div class="add-field">
                  <form method="post">
                  <input type="text" placeholder="Enter field name" name="field_name" required>
                  <input type="text" placeholder="enter default value" name="field_default" >
@@ -32,7 +33,7 @@ if(isset($_SESSION['template_id'])) {
                  }
     $db->finalize($sections);
         ?>
-        <div id="add-section">
+        <div class="add-section">
              <form method="post">
              <input type="text" placeholder="Enter section name" name="section_name" required>
              <input type="hidden" name="template_id" value="<?php echo $template['ID'] ?>">             
