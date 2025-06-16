@@ -14,7 +14,8 @@
     		if ($_SESSION['logged']) {
                 ?>
                 <div id="content">
-                    <div id="menu"><?php include("menu.php");?></div><div id="list"><?php include("list.php");?></div><div id="main"><?php include("main.php");?></div><div id="footer"><?php include("footer.php");?></div></div></div>
+                    <div id="menu"><?php include("menu.php");?></div><div id="main"></div><div id="footer"><?php include("footer.php");?></div></div></div>
 <?php } ?>
+    <script src="js/nav.js"></script>
 	</body>
 </html>

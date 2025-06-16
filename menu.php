@@ -1,8 +1,8 @@
-<div id="menu1">
-     <input type="submit" value="Templates" />
-     <input type="submit" value="Historiques" />
-     <input type="submit" value="Statistiques" />
+<div class="menu">
+     <input type="submit" id="menu-templates" class="item-menu" onclick="loadTemplates(<?php echo $_SESSION['user_id']?>)" value="Templates" />
+     <input type="submit" id="menu-historics" class="item-menu" onclick="loadHistorics()" value="Historiques" />
+     <input type="button" id="menu-statistics" class="item-menu" onclick="loadStatistics()" value="Statistiques" />
 </div>
-<div id="menu2">
-     <input type="submit" value="Parameters" />
+<div class="menu">
+     <input type="submit" id="menu-parameters" class="item-menu" onclick="loadParameters()" value="Parameters" />
 </div>

@@ -21,7 +21,7 @@ class MyDB extends SQLite3
     
     function finalize($result)
     {
-        $result->finalize();
+        #$result->finalize();
     }
         
     function checkUser(string $username, string $password)
@@ -73,8 +73,8 @@ class MyDB extends SQLite3
         $statement = $this->prepare('INSERT Into Templates (User_ID , Name) values (:user_id, :name)');
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':name', $name);
-        $result = $statement->execute();        
-        return $result;
+        $result = $statement->execute();
+        return $this->sqlite3_last_insert_rowid();
     }
     
     function insertSection(int $template_id, int $user_id, string $name)
@@ -119,21 +119,18 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 }
 
 //Data functions
-if (isset($_POST['add-template']) && isset($_POST['template_name'])) {
-    $db->insertTemplate($_SESSION['user_id'],$_POST['template_name']);
+if (isset($_GET['add-template']) && isset($_GET['template_name'])) {
+    $id = $db->insertTemplate($_GET['user_id'],$_GET['template_name']);
+    $db->finalize($res);
+    echo $id;
+}
+elseif (isset($_GET['add-section']) && isset($_GET['template_id']) && isset($_GET['section_name'])) {
+    $db->insertSection($_GET['template_id'],$_GET['user_id'],$_GET['section_name']);
     $db->finalize($res);
 }
-elseif (isset($_POST['add-section']) && isset($_POST['template_id']) && isset($_POST['section_name'])) {
-    $db->insertSection($_POST['template_id'],$_SESSION['user_id'],$_POST['section_name']);
+elseif (isset($_GET['add-field']) && isset($_GET['template_id']) && isset($_GET['section_id']) && isset($_GET['field_name'])) {
+    $db->insertField($_GET['section_id'],$_GET['template_id'],$_GET['user_id'],$_GET['field_name'],$_GET['field_default']);
     $db->finalize($res);
 }
-elseif (isset($_POST['add-field']) && isset($_POST['template_id']) && isset($_POST['section_id']) && isset($_POST['field_name'])) {
-    $db->insertField($_POST['section_id'],$_POST['template_id'],$_SESSION['user_id'],$_POST['field_name'],$_POST['field_default']);
-    $db->finalize($res);
-}
-elseif (isset($_POST['select-template'])) {
-    $_SESSION['template_id'] = $_POST['select-template'];
-}
-
 
 ?>
