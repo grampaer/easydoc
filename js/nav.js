@@ -7,7 +7,7 @@ function loadTemplates(user_id) {
 		element.classList.remove("selected");
 	    }
 	    document.getElementById("menu-templates").classList.add("selected");
-	}
+	h}
     };
     xhttp.open("GET","list.php?user_id="+user_id,true);
     xhttp.send();
