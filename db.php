@@ -18,6 +18,26 @@ class MyDB extends SQLite3
         $num = $result->numColumns();
         return $num;        
     }
+
+    function getTypes(int $user_id)
+    {
+        $statement = $this->prepare('SELECT * FROM Types WHERE User_ID = :user_id');
+        $statement->bindValue(':user_id', $user_id);
+        $result = $statement->execute();
+        return $result;
+        
+    }
+
+    function insertTypes(int $user_id, string $name, string $type, int size)
+    {
+        $statement = $this->prepare('INSERT Into Templates (User_ID , Name, Type, Size) values (:user_id, :name , :type, :size)');
+        $statement->bindValue(':user_id', $user_id);
+        $statement->bindValue(':name', $name);
+        $statement->bindValue(':type', $type);
+        $statement->bindValue(':size', $size);
+        $result = $statement->execute();
+        return $this->sqlite3_last_insert_rowid();
+    }
     
     function finalize($result)
     {

@@ -24,7 +24,7 @@ function loadTemplate(user_id,template_id) {
 	    document.getElementById("templates").innerHTML = this.responseText;
 	}
     };
-    xhttp.open("GET","templates.php?user_id="+user_id+"&template_id="+template_id,true);
+    xhttp.open("GET","template.php?user_id="+user_id+"&template_id="+template_id,true);
     xhttp.send();
 }
 

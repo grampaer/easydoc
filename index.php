@@ -9,7 +9,7 @@
          session_start();
      }
      if (!$S_SESSION['logged']) {
-         include("db.php");
+         include_once("db.php");
          include("login.php");
      }
 if ($_SESSION['logged']) {
