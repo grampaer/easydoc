@@ -18,3 +18,6 @@ if(isset($_GET['template_id'])) {
              <button type="submit">Add</button>
              </form>
              </div>
+<?php
+             }
+?>

@@ -28,7 +28,7 @@ class MyDB extends SQLite3
         
     }
 
-    function insertTypes(int $user_id, string $name, string $type, int size)
+    function insertTypes(int $user_id, string $name, string $type, int $size)
     {
         $statement = $this->prepare('INSERT Into Templates (User_ID , Name, Type, Size) values (:user_id, :name , :type, :size)');
         $statement->bindValue(':user_id', $user_id);
