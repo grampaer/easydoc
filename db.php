@@ -19,15 +19,37 @@ class MyDB extends SQLite3
         return $num;        
     }
 
-    function getTypes(int $user_id)
+    function getColumnsHis(int $user_id)
     {
-        $statement = $this->prepare('SELECT * FROM Types WHERE User_ID = :user_id');
+        $statement = $this->prepare('SELECT HIS_Sections.Name HIS_Fields.Name FROM HIS_Sections LEFT JOIN HIS_Fields on HIS_Sections.ID = HIS_Fields.Section_ID LEFT JOIN HIS_Folders on HIS_Folders.ID = HIS_Sections.Folder_ID where User_ID = :user_id ');
         $statement->bindValue(':user_id', $user_id);
         $result = $statement->execute();
         return $result;
-        
+    }
+    function getFoldersHis(int $user_id)
+    {
+        $statement = $this->prepare('SELECT * FROM HIS_Sections LEFT JOIN HIS_Fields on HIS_Sections.ID = HIS_Fields.Section_ID LEFT JOIN HIS_Folders on HIS_Folders.ID = HIS_Sections.Folder_ID where User_ID = :user_id ');
+        $statement->bindValue(':user_id', $user_id);
+        $result = $statement->execute();
+        return $result;
+    }
+    
+    function getTypes(int $user_id)
+    {
+        $statement = $this->prepare('SELECT * FROM Types WHERE User_ID = :user_id or User_ID IS NULL');
+        $statement->bindValue(':user_id', $user_id);
+        $result = $statement->execute();
+        return $result;
     }
 
+    function getOptionsType(int $type_id)
+    {
+        $statement = $this->prepare('SELECT * FROM Options_TYpes WHERE Type_ID = :type_id');
+        $statement->bindValue(':type_id', $type_id);
+        $result = $statement->execute();
+        return $result;
+    }
+    
     function insertTypes(int $user_id, string $name, string $type, int $size)
     {
         $statement = $this->prepare('INSERT Into Templates (User_ID , Name, Type, Size) values (:user_id, :name , :type, :size)');
@@ -128,7 +150,8 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $password = $_POST['password'];
     $_SESSION['logged']=false;
     
-    if ($res = $db->checkUser($username, $password)) {
+    if ($res = $db->checkUser
+($username, $password)) {
         $row = $db->getNextRow($res);
         if (isset($row['ID'])) {
             $_SESSION['logged']=true;
@@ -149,8 +172,12 @@ elseif (isset($_GET['add-section']) && isset($_GET['template_id']) && isset($_GE
     $db->finalize($res);
 }
 elseif (isset($_GET['add-field']) && isset($_GET['template_id']) && isset($_GET['section_id']) && isset($_GET['field_name'])) {
-    $db->insertField($_GET['section_id'],$_GET['template_id'],$_GET['user_id'],$_GET['field_name'],$_GET['field_default']);
+    $db->insertField($_GET['section_id'],$_GET['template_id'],$_GET['user_id'],$_GET['field_name'],$_GET['field_value']);
     $db->finalize($res);
 }
-
+elseif (isset($_GET['get-type-options']) && (isset($_GET['type_id']))) {
+    $Options = $db->getOptionsType($_GET['type_id']);
+    $db-finalize($res);
+    echo json_encode($Options);
+}
 ?>

@@ -8,15 +8,16 @@
      if (!session_id()) {
          session_start();
      }
-     if (!$S_SESSION['logged']) {
+     if (!isset($S_SESSION['logged']) || !$S_SESSION['logged']) {
          include_once("db.php");
          include("login.php");
      }
 if ($_SESSION['logged']) {
     ?>
-         <div id="content">
-             <div id="menu"><?php include("menu.php");?></div><div id="main"></div><div id="footer"><?php include("footer.php");?></div></div></div>
+    <div id="content">
+        <div id="menu"><?php include("menu.php");?></div><div id="main"></div><div id="footer"><?php include("footer.php");?></div></div></div>
 <?php } ?>
     <script src="js/nav.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
          </body>
          </html>

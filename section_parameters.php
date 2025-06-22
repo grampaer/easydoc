@@ -1,4 +1,4 @@
-<div class="item-section"> <?php echo $section['Name'] ?>  </div>
+<div class="item-section-parameters"> <?php echo $section['Name'] ?>  </div>
 
 <?php
      $fields = $db->getFields($section['ID'],$template['ID'],$_GET['user_id']);

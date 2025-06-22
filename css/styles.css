@@ -78,17 +78,19 @@ label {
     margin: 0em 0em 0em 2em;
     width: 16em;
     font-size: 14px;
+    vertical-align: top;
 }
 
 .item-field-value {
     display: inline-block;
+    vertical-align: top;
 }
 
 .item-list-template {
     padding: 3px 0px 0px 6px;
 }
 
-.add-field {
+.add-field {;    
 }
 
 .add-section {
@@ -107,4 +109,8 @@ input {
 
 .selected {
     background-color: lightgray;
+}
+
+.hidden {
+    display: none;
 }

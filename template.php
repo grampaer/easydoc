@@ -11,13 +11,13 @@ if(isset($_GET['template_id'])) {
     $db->finalize($sections);
     ?>
         <div class="add-section">
-             <form class="item-section" method="post">
-             <input type="text" placeholder="Enter section name" name="section_name" required>
-             <input type="hidden" name="template_id" value="<?php echo $template['ID'] ?>">             
-             <input type="hidden" name="add-section">
-             <button type="submit">Add</button>
-             </form>
+             <div class="item-section">
+             <input type="text" placeholder="Enter section name" id="add_section_name" required>
+             <button type="submit" onclick="addSection(<?php echo $_GET['user_id'] ?>, <?php echo $template['ID'] ?>)">Add</button>
              </div>
+             </div>
+             <button type="submit" onclick="saveFolder(<?php echo $_GET['user_id'] ?>, <?php echo $template['ID'] ?>)">Save</button>
+             
 <?php
              }
 ?>
