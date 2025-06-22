@@ -21,11 +21,12 @@ class MyDB extends SQLite3
 
     function getColumnsHis(int $user_id)
     {
-        $statement = $this->prepare('SELECT HIS_Sections.Name HIS_Fields.Name FROM HIS_Sections LEFT JOIN HIS_Fields on HIS_Sections.ID = HIS_Fields.Section_ID LEFT JOIN HIS_Folders on HIS_Folders.ID = HIS_Sections.Folder_ID where User_ID = :user_id ');
+        $statement = $this->prepare('SELECT HIS_Sections.Name, HIS_Fields.Name FROM HIS_Sections LEFT JOIN HIS_Fields on HIS_Sections.ID = HIS_Fields.Section_ID LEFT JOIN HIS_Folders on HIS_Folders.ID = HIS_Sections.Folder_ID where User_ID = :user_id');
         $statement->bindValue(':user_id', $user_id);
         $result = $statement->execute();
         return $result;
     }
+    
     function getFoldersHis(int $user_id)
     {
         $statement = $this->prepare('SELECT * FROM HIS_Sections LEFT JOIN HIS_Fields on HIS_Sections.ID = HIS_Fields.Section_ID LEFT JOIN HIS_Folders on HIS_Folders.ID = HIS_Sections.Folder_ID where User_ID = :user_id ');
@@ -33,7 +34,15 @@ class MyDB extends SQLite3
         $result = $statement->execute();
         return $result;
     }
-    
+
+    function getParts(int $user_id)
+    {
+        $statement = $this->prepare('SELECT * FROM PARA_Parts WHERE User_ID = :user_id or User_ID IS NULL');
+        $statement->bindValue(':user_id', $user_id);
+        $result = $statement->execute();
+        return $result;
+    }
+
     function getTypes(int $user_id)
     {
         $statement = $this->prepare('SELECT * FROM Types WHERE User_ID = :user_id or User_ID IS NULL');
@@ -110,6 +119,7 @@ class MyDB extends SQLite3
         $result = $statement->execute();        
         return $result;
     }
+
     function insertTemplate(int $user_id, string $name)
     {
         $statement = $this->prepare('INSERT Into Templates (User_ID , Name) values (:user_id, :name)');
@@ -118,6 +128,16 @@ class MyDB extends SQLite3
         $result = $statement->execute();
         return $this->sqlite3_last_insert_rowid();
     }
+
+    function insertPart(int $user_id, string $name)
+    {
+        $statement = $this->prepare('INSERT Into PARA_Parts (User_ID , Name) values (:user_id, :name)');
+        $statement->bindValue(':user_id', $user_id);
+        $statement->bindValue(':name', $name);
+        $result = $statement->execute();
+        return $this->sqlite3_last_insert_rowid();
+    }
+    
     
     function insertSection(int $template_id, int $user_id, string $name)
     {
@@ -179,5 +199,10 @@ elseif (isset($_GET['get-type-options']) && (isset($_GET['type_id']))) {
     $Options = $db->getOptionsType($_GET['type_id']);
     $db-finalize($res);
     echo json_encode($Options);
+}
+elseif (isset($_GET['add-part']) && isset($_GET['part_name'])) {
+    $id = $db->insertPart($_GET['user_id'],$_GET['part_name']);
+    $db->finalize($res);
+    echo $id;
 }
 ?>

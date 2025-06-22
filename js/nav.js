@@ -58,6 +58,17 @@ function loadPart(user_id,part_id) {
     xhttp.send();
 }
 
+function addPart(user_id) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+	loadParameters(user_id);
+	loadPart(user_id,this.repsoneText);
+    }
+    var params = "add-part=1&user_id="+user_id+"&part_name="+document.getElementById("add_part_name").value
+    xhttp.open("GET","db.php?"+params,true);
+    xhttp.send();
+}
+
 function addTemplate(user_id) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -165,6 +176,10 @@ function loadHistorics(user_id) {
     xhttp.onreadystatechange = function() {
 	if (this.readyState == 4 && this.status == 200) {
 	    document.getElementById("main").innerHTML = this.responseText;
+	    for (element of document.getElementsByClassName("menu-item")){
+		element.classList.remove("selected");
+	    }
+	    document.getElementById("menu-historics").classList.add("selected");
 	}
     };
     xhttp.open("GET","historics.php?user_id="+user_id,true);
@@ -176,6 +191,10 @@ function loadStatistics(user_id) {
     xhttp.onreadystatechange = function() {
 	if (this.readyState == 4 && this.status == 200) {
 	    document.getElementById("main").innerHTML = this.responseText;
+	    for (element of document.getElementsByClassName("menu-item")){
+		element.classList.remove("selected");
+	    }
+	    document.getElementById("menu-statistics").classList.add("selected");
 	}
     };
     xhttp.open("GET","statistics.php",true);

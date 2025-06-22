@@ -19,7 +19,7 @@ while ($column = $db->getNextRow($columns)) {
         $line_sections .= "<td>".$previous_name."</td"; 
     }
     $line_fields .=  "<td>".$column['HIS_Sections.Name']." ".$column['HIS_Fields.Name']."</td>";
-    i$line_filters .= '<td><input type="text" placeholder="filter" id="filter" ></td>';
+    $line_filters .= '<td><input type="text" placeholder="filter" id="filter" ></td>';
 }
 ?>
     <tr>

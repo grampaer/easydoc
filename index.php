@@ -19,5 +19,6 @@ if ($_SESSION['logged']) {
 <?php } ?>
     <script src="js/nav.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.com/libraries/Chart.js"></script>
          </body>
          </html>
