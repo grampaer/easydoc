@@ -1,7 +1,13 @@
-<div class="item-section"> <?php echo $section['Name'] ?>  </div>
-
+<div class="item-section">
+     <div class="item-section-name"><?php echo $section['Name'] ?>
+     </div>
+     <div class="item-section-commands">
+     <i class="fa-solid fa-trash-can" onclick="removeSection(<?php echo $section['Template_ID'] ?>, <?php echo $section['ID'] ?>)"></i>
+     </div>
+     </div>
+     
 <?php
-     $fields = $db->getFields($section['ID'],$template['ID'],$_GET['user_id']);
+     $fields = $db->getFields($section['ID'],$template['ID'],$_SESSION['user_id']);
 while ($field = $db->getNextRow($fields)) {
     include("field.php");
 }
@@ -17,7 +23,7 @@ $db->finalize($fields);
     <select id="add_field<?php echo $section['ID'] ?>_value_select" class="item-field-value" onchange="changeTypeField(<?php echo $section['ID'] ?>)" >
 <?php
 
-    $types = $db->getTypes($_GET['user_id']);
+    $types = $db->getTypes($_SESSION['user_id']);
 while ($type = $db->getNextRow($types)) {
     ?>
     <option id="option_<?php echo $type['ID'] ?>" value="<?php echo $type['ID'] ?>" data-type="<?php echo $type['Type'] ?>" ><?php echo $type['Name'] ?></option>
@@ -26,6 +32,8 @@ while ($type = $db->getNextRow($types)) {
         }
 ?>
     </select>
-    
-        <button type="submit" class="item-field-value" onclick="addField(<?php echo $_GET['user_id'] ?>, <?php echo $template['ID'] ?>, <?php echo $section['ID'] ?>)">Add</button>
+        <div class="item-field-commands">
+    <i class="item-field-value fa-solid fa-plus" onclick="addField(<?php echo $template['ID'] ?>, <?php echo $section['ID'] ?>)"></i>
     </div>
+    </div>
+    

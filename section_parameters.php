@@ -1,7 +1,12 @@
-<div class="item-section-parameters"> <?php echo $section['Name'] ?>  </div>
-
+<div class="item-section-parameters">
+     <div class="item-section-parameters-name"> <?php echo $section['Name'] ?>
+     </div>
+     <div class="item-section-parameters-commands">
+     <i class="fa-solid fa-trash-can" onclick="removeSectionParameters(<?php echo $section['Template_ID'] ?>, <?php echo $section['ID'] ?>)"></i>
+     </div>
+     </div>
 <?php
-     $fields = $db->getFields($section['ID'],$template['ID'],$_GET['user_id']);
+     $fields = $db->getParameters($section['ID']);
 while ($field = $db->getNextRow($fields)) {
     include("field.php");
 }
@@ -17,7 +22,7 @@ $db->finalize($fields);
     <select id="add_field<?php echo $section['ID'] ?>_value_select" class="item-field-value" onchange="changeTypeField(<?php echo $section['ID'] ?>)" >
 <?php
 
-    $types = $db->getTypes($_GET['user_id']);
+    $types = $db->getTypes($_SESSION['user_id']);
 while ($type = $db->getNextRow($types)) {
     ?>
     <option id="option_<?php echo $type['ID'] ?>" value="<?php echo $type['ID'] ?>" data-type="<?php echo $type['Type'] ?>" ><?php echo $type['Name'] ?></option>
