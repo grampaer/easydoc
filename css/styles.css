@@ -252,7 +252,11 @@ button { padding: 10px 20px; }
 
 #message { color: red; }
 
-canvas { max-width: 600px; margin-top: 40px; }
+canvas {
+    max-width: 600px;
+    margin-top: 40px;
+    max-height: 600px;
+}
 
 body {
     font-family: Arial, sans-serif;

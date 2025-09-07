@@ -1,7 +1,9 @@
-let historique = [];
-let sortDirection = true;
 
-let presets = {};
+function backToLogin() {
+    document.getElementById('page-createAccount').classList.add('hidden');
+    document.getElementById('page-forgotPassword').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+}
 
 async function login() {
     const username = document.getElementById('username').value;
@@ -34,195 +36,124 @@ async function login() {
     }
 }
 
-async function loadPresets() {
-    try {
-        const response = await fetch('get_presets.php');
-        if (!response.ok) throw new Error('Erreur réseau');
-        const result = await response.json();
-        if (result.success) {
-            presets = result.data;
-        } else {
-            throw new Error(result.error || 'Erreur lors du chargement des presets');
-        }
-    } catch (error) {
-        console.error('Erreur:', error);
-        // Utiliser des presets par défaut en cas d'erreur
-        presets = {
-            ptg: { nom: "Dupont", prenom: "Jean", naissance: "1970-01-01", niss: "12345678901", numPatient: "A001", sexe: "Masculin", typeInterv: "PTG" },
-            pth: { nom: "Martin", prenom: "Paul", naissance: "1965-05-12", niss: "23456789012", numPatient: "A002", sexe: "Masculin", typeInterv: "PTH" },
-            lca: { nom: "Durand", prenom: "Luc", naissance: "1985-09-20", niss: "34567890123", numPatient: "A003", sexe: "Masculin", typeInterv: "LCA" },
-            menisque: { nom: "Petit", prenom: "Louis", naissance: "1990-03-15", niss: "45678901234", numPatient: "A004", sexe: "Masculin", typeInterv: "Ménisque" },
-            vierge: { nom: "", prenom: "", naissance: "", niss: "", numPatient: "", sexe: "Sexe", typeInterv: "" }
-        };
-    }
-}
-
-async function showPage(page) {
-    document.getElementById('page-interventions').classList.add('hidden');
-    document.getElementById('page-historique').classList.add('hidden');
-    document.getElementById('page-statistiques').classList.add('hidden');
-
-    if (page === 'interventions') document.getElementById('page-interventions').classList.remove('hidden');
-    if (page === 'historique') { 
-        document.getElementById('page-historique').classList.remove('hidden'); 
-        await loadChartData();
-        renderCharts(); 
-    }
-    if (page === 'statistiques') {
-        document.getElementById('page-statistiques').classList.remove('hidden');
-        await loadInterventions();
-    }
-}
-
-function prefill(type) {
-    const data = presets[type];
-    if (data) {
-        document.getElementById('nom').value = data.nom;
-        document.getElementById('prenom').value = data.prenom;
-        document.getElementById('naissance').value = data.naissance;
-        document.getElementById('niss').value = data.niss;
-        document.getElementById('numPatient').value = data.numPatient;
-        document.getElementById('sexe').value = data.sexe;
-        document.getElementById('typeInterv').value = data.typeInterv;
-    }
-}
-
-async function saveIntervention() {
-    const intervention = {
-        nom: document.getElementById('nom').value,
-        prenom: document.getElementById('prenom').value,
-        naissance: document.getElementById('naissance').value,
-        niss: document.getElementById('niss').value,
-        numPatient: document.getElementById('numPatient').value,
-        sexe: document.getElementById('sexe').value,
-        dateOp: document.getElementById('dateOp').value,
-        anesthesie: document.getElementById('anesthesie').value,
-        assistants: document.getElementById('assistants').value,
-        typeInterv: document.getElementById('typeInterv').value,
-        codesInami: document.getElementById('codesInami').value,
-        cote: document.getElementById('cote').value,
-        membre: document.getElementById('membre').value
-    };
+async function createAccount() {
+    const nom = document.getElementById('newNom').value;
+    const prenom = document.getElementById('newPrenom').value;
+    const email = document.getElementById('newEmail').value;
+    const password = document.getElementById('newPassword').value;
+    const specialite = document.getElementById('newSpecialite').value;
 
     try {
-        const response = await fetch('save_intervention.php', {
+        const response = await fetch('signup.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(intervention)
+            body: JSON.stringify({
+                nom,
+                prenom,
+                email,
+                password,
+                specialite
+            })
         });
 
-        if (!response.ok) throw new Error('Erreur lors de la sauvegarde');
-
         const result = await response.json();
-        historique.push(intervention);
-        updateStatTable();
-        alert("Intervention enregistrée (ID: " + result.id + ")");
-    } catch (error) {
-        console.error('Erreur:', error);
-        alert(error.message || "Erreur lors de la sauvegarde");
-    }
-}
 
-function updateStatTable() {
-    const body = document.getElementById('statTableBody');
-    body.innerHTML = '';
-    historique.forEach((h, i) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-        <td>${h.dateOp}</td>
-        <td>${h.niss}</td>
-        <td>${h.nom}</td>
-        <td>${h.prenom}</td>
-        <td>${h.anesthesie}</td>
-        <td>${h.assistants}</td>
-        <td>${h.typeInterv}</td>
-        <td>${h.codesInami}</td>
-        `;
-        row.classList.add('hover:bg-teal-50','cursor-pointer');
-        row.onclick = () => editIntervention(i);
-        body.appendChild(row);
-    });
-}
-
-function editIntervention(index) {
-    const h = historique[index];
-    showPage('interventions');
-    document.getElementById('nom').value = h.nom;
-    document.getElementById('prenom').value = h.prenom;
-    document.getElementById('naissance').value = h.naissance;
-    document.getElementById('niss').value = h.niss;
-    document.getElementById('numPatient').value = h.numPatient;
-    document.getElementById('sexe').value = h.sexe;
-    document.getElementById('dateOp').value = h.dateOp;
-    document.getElementById('anesthesie').value = h.anesthesie;
-    document.getElementById('assistants').value = h.assistants;
-    document.getElementById('typeInterv').value = h.typeInterv;
-    document.getElementById('codesInami').value = h.codesInami;
-}
-
-function filterTable() {
-    const query = document.getElementById('searchBox').value.toLowerCase();
-    const rows = document.querySelectorAll('#statTable tbody tr');
-    rows.forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
-    });
-}
-
-function sortTable(colIndex) {
-    const table = document.getElementById('statTable');
-    const rows = Array.from(table.rows).slice(1);
-    rows.sort((a, b) => {
-        const aText = a.cells[colIndex].innerText;
-        const bText = b.cells[colIndex].innerText;
-        return sortDirection ? aText.localeCompare(bText) : bText.localeCompare(aText);
-    });
-    sortDirection = !sortDirection;
-    const body = document.getElementById('statTableBody');
-    body.innerHTML = '';
-    rows.forEach(r => body.appendChild(r));
-}
-
-async function loadChartData() {
-    try {
-        const response = await fetch('data.php');
-        if (!response.ok) throw new Error('Erreur réseau');
-        const data = await response.json();
-        // Traiter les données pour les graphiques ici
-        // Vous devrez peut-être adapter renderCharts() pour utiliser ces données
-        console.log('Données des graphiques:', data);
-    } catch (error) {
-        console.error('Erreur:', error);
-        alert("Erreur lors du chargement des données des graphiques");
-    }
-}
-
-async function loadInterventions() {
-    try {
-        const response = await fetch('get_interventions.php');
-        if (!response.ok) throw new Error('Erreur réseau');
-        const result = await response.json();
         if (result.success) {
-            historique = result.data;
-            updateStatTable();
+            alert('Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
+            backToLogin();
         } else {
-            throw new Error(result.error || 'Erreur lors du chargement des interventions');
+            throw new Error(result.message || 'Erreur lors de la création du compte');
         }
     } catch (error) {
         console.error('Erreur:', error);
-        alert(error.message || "Erreur lors du chargement des interventions");
+        alert(error.message || 'Échec de la création du compte');
     }
 }
 
-function renderCharts() {
-    const ctx1 = document.getElementById('chart1M').getContext('2d');
-    const ctx2 = document.getElementById('chart1Y').getContext('2d');
-    const ctx3 = document.getElementById('chart5Y').getContext('2d');
+function loadCompte() {
+    document.getElementById('compteNom').value = localStorage.getItem('compteNom') || '';
+    document.getElementById('comptePrenom').value = localStorage.getItem('comptePrenom') || '';
+    document.getElementById('compteHopital').value = localStorage.getItem('compteHopital') || '';
+    document.getElementById('compteSpecialite').value = localStorage.getItem('compteSpecialite') || 'Médecine générale';
+    document.getElementById('compteAdresse').value = localStorage.getItem('compteAdresse') || '';
+    // Note: Signature file cannot be reloaded directly due to browser security restrictions.
+}
 
-    new Chart(ctx1, { type: 'bar', data: { labels: ['S1','S2','S3','S4'], datasets:[{label:'Interventions (1 mois)', data:[3,5,2,4], backgroundColor:'teal'}] }});
+async function applyPreset(presetType) {
+    if (!presetType) return;
+    
+    try {
+        const response = await fetch('get_presets.php');
+        if (!response.ok) {
+            throw new Error('Erreur réseau');
+        }
+        const result = await response.json();
+        
+        if (result.success && result.data[presetType]) {
+            const preset = result.data[presetType];
+            
+            // Remplir les champs avec les données du preset
+            document.getElementById('niss').value = preset.niss || '';
+            document.getElementById('nom').value = preset.nom || '';
+            document.getElementById('prenom').value = preset.prenom || '';
+            document.getElementById('naissance').value = preset.naissance || '';
+            document.getElementById('numPatient').value = preset.numPatient || '';
+            
+            // Sélectionner le sexe
+            if (preset.sexe) {
+                const sexeRadio = document.querySelector(`input[name="sexe"][value="${preset.sexe}"]`);
+                if (sexeRadio) {
+                    sexeRadio.checked = true;
+                }
+            }
+            
+            // Remplir le type d'intervention
+            if (preset.typeInterv) {
+                document.getElementById('typeInterv').value = preset.typeInterv || '';
+            }
+            
+            // Vous pouvez ajouter d'autres champs ici selon vos besoins
+        }
+    } catch (error) {
+        console.error('Erreur lors de l\'application du preset:', error);
+    }
+}
 
-    new Chart(ctx2, { type: 'line', data: { labels:['Jan','Fév','Mar','Avr','Mai'], datasets:[{label:'1 an', data:[10,15,12,20,18], borderColor:'teal', fill:false},{label:'Moyenne', data:[15,15,15,15,15], borderColor:'orange', borderDash:[5,5], fill:false}] }});
+async function loadPresets() {
+    try {
+        const response = await fetch('get_presets.php');
+        if (!response.ok) {
+            throw new Error('Erreur réseau');
+        }
+        const result = await response.json();
+        
+        if (result.success) {
+            // Remplir le menu déroulant des presets
+            const presetSelect = document.getElementById('presetSelect');
+            if (presetSelect) {
+                presetSelect.innerHTML = '<option value="">Sélectionner un preset</option>';
+                for (const [type, preset] of Object.entries(result.data)) {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = preset.nom && preset.prenom ? `${preset.nom} ${preset.prenom}` : type;
+                    presetSelect.appendChild(option);
+                }
+            }
+        } else {
+            throw new Error(result.error || 'Erreur lors du chargement des presets');
+        }
+    } catch (error) {
+        console.error('Erreur lors du chargement des presets:', error);
+    }
+}
 
-    new Chart(ctx3, { type: 'line', data: { labels:['2020','2021','2022','2023','2024'], datasets:[{label:'5 ans', data:[100,120,90,150,170], borderColor:'teal', fill:false},{label:'Tendance', data:[126,126,126,126,126], borderColor:'orange', borderDash:[5,5], fill:false}] }});
+function saveCompte() {
+    localStorage.setItem('compteNom', document.getElementById('compteNom').value);
+    localStorage.setItem('comptePrenom', document.getElementById('comptePrenom').value);
+    localStorage.setItem('compteHopital', document.getElementById('compteHopital').value);
+    localStorage.setItem('compteSpecialite', document.getElementById('compteSpecialite').value);
+    localStorage.setItem('compteAdresse', document.getElementById('compteAdresse').value);
+    alert('Informations du compte enregistrées !');
 }

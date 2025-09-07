@@ -48,6 +48,26 @@ async function showPage(page) {
     document.getElementById('page-statistiques').classList.add('hidden');
     document.getElementById('page-compte').classList.add('hidden');
 
+    // Cacher le menu latéral si ce n'est pas la page interventions
+    const sidebar = document.getElementById('sidebar');
+    if (page !== 'interventions') {
+        sidebar.classList.add('-translate-x-full');
+        sidebar.classList.remove('translate-x-0');
+        // Cacher aussi l'overlay si nécessaire
+        const overlay = document.getElementById('sidebarOverlay');
+        if (overlay) {
+            overlay.classList.add('opacity-0', 'hidden');
+            overlay.classList.remove('opacity-50', 'block');
+        }
+        isSidebarOpen = false;
+    } else {
+        // Pour la page interventions, on affiche la sidebar en mode desktop
+        if (window.innerWidth >= 768) {
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+        }
+    }
+
     if (page === 'interventions') document.getElementById('page-interventions').classList.remove('hidden');
     if (page === 'historique') { 
         document.getElementById('page-historique').classList.remove('hidden'); 
@@ -64,8 +84,11 @@ async function showPage(page) {
         loadCompte(); 
     }
 
+    // Mettre à jour la navigation active
+    setActiveNav(page);
+
     // Close sidebar if open and on a small screen
-    if (isSidebarOpen && window.innerWidth < 768) {
+    if (isSidebarOpen && window.innerWidth < 768) { // 768px is Tailwind's 'md' breakpoint
         toggleSidebar();
     }
 }
@@ -233,22 +256,29 @@ function showAuthPage(page) {
       if (page === 'forgotPassword') document.getElementById('page-forgotPassword').classList.remove('hidden');
     }
 
-function showPage(page) {
-      document.getElementById('page-interventions').classList.add('hidden');
-      document.getElementById('page-historique').classList.add('hidden');
-      document.getElementById('page-statistiques').classList.add('hidden');
-      document.getElementById('page-compte').classList.add('hidden');
 
-      if (page === 'interventions') document.getElementById('page-interventions').classList.remove('hidden');
-      if (page === 'historique') { document.getElementById('page-historique').classList.remove('hidden'); updateStatTable(); }
-      if (page === 'statistiques') { document.getElementById('page-statistiques').classList.remove('hidden'); renderCharts(); }
-      if (page === 'compte') { document.getElementById('page-compte').classList.remove('hidden'); loadCompte(); }
-
-      // Close sidebar if open and on a small screen
-      if (isSidebarOpen && window.innerWidth < 768) { // 768px is Tailwind's 'md' breakpoint
-          toggleSidebar();
-      }
+function setActiveNav(pageId) {
+    // Enlever la classe active de tous les liens de navigation
+    const navLinks = document.querySelectorAll('header nav a, #sidebar nav a');
+    navLinks.forEach(link => {
+        link.classList.remove('text-teal-600', 'font-bold');
+        link.classList.add('text-gray-600', 'hover:text-teal-600');
+    });
+    
+    // Ajouter la classe active au lien correspondant
+    const activeLink = document.querySelector(`header nav a[onclick="showPage('${pageId}')"]`);
+    if (activeLink) {
+        activeLink.classList.remove('text-gray-600', 'hover:text-teal-600');
+        activeLink.classList.add('text-teal-600', 'font-bold');
     }
+    
+    // Pour la navigation mobile dans la sidebar
+    const mobileActiveLink = document.querySelector(`#sidebar nav a[onclick="showPage('${pageId}');"]`);
+    if (mobileActiveLink) {
+        mobileActiveLink.classList.remove('text-gray-700', 'hover:bg-gray-100');
+        mobileActiveLink.classList.add('bg-teal-100', 'text-teal-700');
+    }
+}
 
 function filterTable() {
       const q = document.getElementById('searchBox').value.toLowerCase();

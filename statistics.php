@@ -1,26 +1,29 @@
-<div>
-  <canvas id="myChart"></canvas>
-</div>
-     
-<script>
-  const ctx = document.getElementById('myChart');
+<h2>Nombre d’entrées par mois (année courante)</h2>
+    <canvas id="myChart"></canvas>
 
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  });
+     <script>
+     fetch("data.php", {
+             credentials: "include"
+                 })
+     .then(response => response.json())
+     .then(data => {
+             const ctx = document.getElementById("myChart").getContext("2d");
+             new Chart(ctx, {
+                     type: "bar",
+                         data: {
+                         labels: data.labels,
+                             datasets: [{
+                                 label: "Entrées",
+                                     data: data.counts,
+                                     backgroundColor: "#42a5f5"
+                                     }]
+                     },
+                         options: {
+                         scales: {
+                             y: { beginAtZero: true },
+                                 x: { title: { display: true, text: "Mois" } }
+                         }
+                     }
+             });
+         });
 </script>

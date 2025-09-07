@@ -1,5 +1,36 @@
 <?php
 
+if (!session_id()) {
+    session_start();
+}
+
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $data = json_decode(file_get_contents('php://input'), true);
+        
+        if (!isset($data['username']) || !isset($data['password'])) {
+            throw new RuntimeException('Identifiants manquants');
+        }
+
+        include_once("db.php");
+        $logged = $db->checkUser($data['username'], $data['password']);
+
+        if ($logged) {
+            echo json_encode(['success' => true]);
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Identifiants incorrects']);
+            exit;
+        }
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        exit;
+    }
+}
+
 if (!$_SESSION['logged']) { ?>
     <div id="login">
         <div id="login-form">

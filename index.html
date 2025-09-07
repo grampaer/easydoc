@@ -9,11 +9,66 @@
     @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;800&display=swap');
     body { font-family: 'Manrope', sans-serif; }
     th { cursor: pointer; }
+    /* Basic styling for radio/checkboxes if @tailwindcss/forms is not used */
+    .form-radio {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      display: inline-block;
+      vertical-align: middle;
+      height: 1rem;
+      width: 1rem;
+      border-radius: 50%;
+      border: 1px solid #d1d5db; /* gray-300 */
+      background-color: #fff;
+      cursor: pointer;
+    }
+    .form-radio:checked {
+      background-color: #0d9488; /* teal-600 */
+      border-color: #0d9488;
+      background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .form-checkbox {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      display: inline-block;
+      vertical-align: middle;
+      height: 1rem;
+      width: 1rem;
+      border-radius: 0.25rem; /* rounded */
+      border: 1px solid #d1d5db; /* gray-300 */
+      background-color: #fff;
+      cursor: pointer;
+    }
+    .form-checkbox:checked {
+      background-color: #0d9488; /* teal-600 */
+      border-color: #0d9488;
+      background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    /* Style pour l'élément sélectionné dans le menu latéral */
+    #sidebar nav a.selected {
+      background-color: #0d9488; /* teal-600 */
+      color: white;
+    }
+    #sidebar nav a.selected:hover {
+      background-color: #0f766e; /* teal-700 */
+    }
+    /* Style pour la navigation active dans le menu mobile */
+    #sidebar nav a.bg-teal-100 {
+      background-color: #f0fdfa; /* teal-50 */
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
- 
-  <!-- Écran de connexion -->
+
+  <!-- Page Login -->
   <div id="loginScreen" class="flex items-center justify-center h-screen bg-teal-50">
     <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
       <h1 class="text-2xl font-extrabold text-teal-600 mb-6 text-center">EASYDOC - Connexion</h1>
@@ -21,235 +76,330 @@
         <input id="username" type="text" placeholder="Nom d'utilisateur" class="w-full p-2 border rounded" />
         <input id="password" type="password" placeholder="Mot de passe" class="w-full p-2 border rounded" />
         <button onclick="login()" class="w-full bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700">Se connecter</button>
+        <div class="flex justify-between text-sm text-teal-600 mt-4">
+          <a href="#" onclick="showAuthPage('createAccount')">Créer un compte</a>
+          <a href="#" onclick="showAuthPage('forgotPassword')">Mot de passe oublié ?</a>
+        </div>
       </div>
     </div>
   </div>
- 
+
+  <!-- Page Créer un compte -->
+  <div id="page-createAccount" class="hidden flex items-center justify-center h-screen bg-teal-50">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-4">
+      <h2 class="text-xl font-bold text-teal-700 mb-4 text-center">Créer un compte</h2>
+      <input id="newNom" type="text" placeholder="Nom" class="p-2 border rounded w-full" />
+      <input id="newPrenom" type="text" placeholder="Prénom" class="p-2 border rounded w-full" />
+      <input id="newEmail" type="email" placeholder="Email" class="p-2 border rounded w-full" />
+      <input id="newPassword" type="password" placeholder="Mot de passe" class="p-2 border rounded w-full" />
+      <select id="newSpecialite" class="p-2 border rounded w-full">
+        <option>Médecine générale</option>
+        <option>Orthopédie</option>
+        <option>Cardiologie</option>
+        <option>Chirurgie</option>
+        <option>Pédiatrie</option>
+        <option>Gynécologie</option>
+      </select>
+      <button onclick="createAccount()" class="w-full bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700">Valider</button>
+      <button onclick="backToLogin()" class="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400">Retour</button>
+    </div>
+  </div>
+
+  <!-- Page Mot de passe oublié -->
+  <div id="page-forgotPassword" class="hidden flex items-center justify-center h-screen bg-teal-50">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-4">
+      <h2 class="text-xl font-bold text-teal-700 mb-4 text-center">Mot de passe oublié</h2>
+      <input id="resetEmail" type="email" placeholder="Email" class="p-2 border rounded w-full" />
+      <button onclick="alert('Code envoyé par email (simulation)')" class="w-full bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700">Envoyer le code</button>
+      <button onclick="backToLogin()" class="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400">Retour</button>
+    </div>
+  </div>
+
   <!-- Application principale -->
-  <div id="appScreen" class="hidden">
-    <header class="bg-white shadow px-6 py-4 flex justify-between items-center sticky top-0 z-50 border-b">
+  <div id="appScreen" class="hidden h-screen flex flex-col">
+    <header class="bg-white shadow px-6 py-4 flex justify-between items-center z-50 border-b flex-shrink-0">
+      <!-- Hamburger menu button for small screens -->
+      <button id="sidebarToggle" class="md:hidden p-2 text-gray-600 hover:text-teal-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+      </button>
       <div class="text-2xl font-extrabold text-teal-600">EASYDOC</div>
-      <nav class="space-x-6 text-sm font-medium text-gray-600">
+      <nav class="space-x-6 text-sm font-medium text-gray-600 hidden md:flex"> <!-- Hidden on small, shown on medium+ -->
         <a href="#" onclick="showPage('interventions')" class="hover:text-teal-600">Interventions</a>
         <a href="#" onclick="showPage('historique')" class="hover:text-teal-600">Historique</a>
         <a href="#" onclick="showPage('statistiques')" class="hover:text-teal-600">Statistiques</a>
-        <a href="#" class="hover:text-teal-600">Paramètres</a>
-        <a href="#" class="hover:text-teal-600">Compte</a>
+        <a href="#" onclick="showPage('compte')" class="hover:text-teal-600">Compte</a>
       </nav>
+      <div class="md:hidden"></div> <!-- Placeholder to balance flex-between on small screens -->
     </header>
- 
-    <!-- Page Interventions -->
-    <div id="page-interventions" class="p-6 space-y-8">
-      <div class="flex">
-        <aside class="w-64 bg-white border-r p-6 space-y-4 hidden md:block">
-          <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wide">Interventions</h2>
-          <ul class="space-y-2 text-sm">
-            <li><button onclick="prefill('ptg')" class="w-full text-left px-3 py-2 rounded-md hover:bg-teal-50 font-medium">PTG</button></li>
-            <li><button onclick="prefill('pth')" class="w-full text-left px-3 py-2 rounded-md hover:bg-teal-50 font-medium">PTH</button></li>
-            <li><button onclick="prefill('lca')" class="w-full text-left px-3 py-2 rounded-md hover:bg-teal-50 font-medium">LCA</button></li>
-            <li><button onclick="prefill('menisque')" class="w-full text-left px-3 py-2 rounded-md hover:bg-teal-50 font-medium">Ménisque</button></li>
-            <li><button onclick="prefill('vierge')" class="w-full text-left px-3 py-2 rounded-md hover:bg-teal-50 font-medium">Doc vierge</button></li>
-          </ul>
-        </aside>
- 
-        <main class="flex-1 p-6 space-y-8 overflow-auto">
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Sidebar / Menu latéral gauche -->
+      <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out z-40 w-64 bg-white text-gray-800 p-4 space-y-2 flex-shrink-0 overflow-y-auto shadow-md">
+          <h3 class="text-lg font-bold mb-4 text-teal-700">Modèles d'intervention</h3>
+          <nav class="space-y-2">
+              <a href="#" onclick="loadInterventionTemplate('PTG')" class="block py-2 px-3 rounded text-gray-700 hover:bg-gray-100 transition-colors duration-200">PTG (Genou)</a>
+              <a href="#" onclick="loadInterventionTemplate('PTH')" class="block py-2 px-3 rounded text-gray-700 hover:bg-gray-100 transition-colors duration-200">PTH (Hanche)</a>
+              <a href="#" onclick="loadInterventionTemplate('LCA')" class="block py-2 px-3 rounded text-gray-700 hover:bg-gray-100 transition-colors duration-200">LCA (Genou)</a>
+              <a href="#" onclick="loadInterventionTemplate('Menisque')" class="block py-2 px-3 rounded text-gray-700 hover:bg-gray-100 transition-colors duration-200">Ménisque (Genou)</a>
+              <a href="#" onclick="loadInterventionTemplate('Vierge')" class="block py-2 px-3 rounded bg-red-600 text-white hover:bg-red-700 transition-colors duration-200">Intervention Vierge</a>
+          </nav>
+          <hr class="border-gray-200 my-4 md:hidden"> <!-- Separator for mobile nav -->
+          <!-- Main navigation links for mobile (visible only on small screens) -->
+          <nav class="space-y-2 md:hidden">
+              <a href="#" onclick="showPage('interventions');" class="block py-2 px-3 rounded text-gray-700 hover:bg-gray-100">Interventions</a>
+              <a href="#" onclick="showPage('historique');" class="block py-2 px-3 rounded text-gray-700 hover:bg-gray-100">Historique</a>
+              <a href="#" onclick="showPage('statistiques');" class="block py-2 px-3 rounded text-gray-700 hover:bg-gray-100">Statistiques</a>
+              <a href="#" onclick="showPage('compte');" class="block py-2 px-3 rounded text-gray-700 hover:bg-gray-100">Compte</a>
+          </nav>
+      </aside>
+
+      <!-- Overlay for mobile sidebar (appears when sidebar is open) -->
+      <div id="sidebarOverlay" class="fixed inset-0 bg-black z-30 opacity-0 hidden transition-opacity duration-200 ease-in-out" onclick="toggleSnidebar()"></div>
+
+      <!-- Main content area -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 md:ml-64"> <!-- md:ml-64 re-added here -->
+        <!-- Page Interventions -->
+        <div id="page-interventions" class="p-4 sm:p-6 space-y-8"> <!-- Responsive padding -->
           <section class="bg-white rounded-lg shadow p-4">
             <h2 class="text-lg font-bold text-teal-700 mb-4">Identification patient</h2>
+            <div class="mb-4">
+              <select id="presetSelect" onchange="applyPreset(this.value)" class="p-2 border rounded w-full">
+                  <option value="">Sélectionner un preset</option>
+              </select>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input id="niss" type="text" placeholder="NISS" class="p-2 border rounded w-full" />
               <input id="nom" type="text" placeholder="Nom" class="p-2 border rounded w-full" />
               <input id="prenom" type="text" placeholder="Prénom" class="p-2 border rounded w-full" />
-              <input id="naissance" type="date" placeholder="Date de naissance" class="p-2 border rounded w-full" />
-              <select id="sexe" class="p-2 border rounded w-full">
-                <option>Sexe</option><option>Masculin</option><option>Féminin</option><option>Indéterminé</option>
-              </select>
+              <input id="naissance" type="date" class="p-2 border rounded w-full" />
+              <div class="col-span-full">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Sexe :</label>
+                <div class="flex items-center space-x-4">
+                  <label class="inline-flex items-center">
+                    <input type="radio" name="sexe" value="Masculin" class="form-radio text-teal-600" id="sexeMasculin">
+                    <span class="ml-2">Masculin</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="radio" name="sexe" value="Féminin" class="form-radio text-teal-600" id="sexeFeminin">
+                    <span class="ml-2">Féminin</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="radio" name="sexe" value="Indéterminé" class="form-radio text-teal-600" id="sexeIndetermine">
+                    <span class="ml-2">Indéterminé</span>
+                  </label>
+                </div>
+              </div>
               <input id="numPatient" type="text" placeholder="N° patient" class="p-2 border rounded w-full" />
             </div>
           </section>
- 
+
           <section class="bg-white rounded-lg shadow p-4">
             <h2 class="text-lg font-bold text-teal-700 mb-4">Intervention</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input id="dateOp" type="date" placeholder="Date opératoire" class="p-2 border rounded w-full" />
-              <input id="anesthesie" type="text" placeholder="Anesthésiste / Type d’anesthésie" class="p-2 border rounded w-full" />
-              <input id="assistants" type="text" placeholder="Assistants / Infirmiers / Internes" class="p-2 border rounded w-full" />
+              <input id="dateOp" type="date" class="p-2 border rounded w-full" />
+              <input id="anesthesie" type="text" placeholder="Anesthésiste" class="p-2 border rounded w-full" />
+              <input id="typeAnesthesie" type="text" placeholder="Type d’anesthésie" class="p-2 border rounded w-full" />
+              <input id="assistants" type="text" placeholder="Assistants" class="p-2 border rounded w-full" />
+              <input id="infirmiers" type="text" placeholder="Infirmiers" class="p-2 border rounded w-full" />
+              <input id="internes" type="text" placeholder="Internes" class="p-2 border rounded w-full" />
               <input id="typeInterv" type="text" placeholder="Type d’intervention" class="p-2 border rounded w-full" />
-              <select id="cote" class="p-2 border rounded w-full">
-                <option>Côté</option><option>Gauche</option><option>Droit</option><option>Bilatéral</option>
-              </select>
-              <input id="membre" type="text" placeholder="Membre opéré" class="p-2 border rounded w-full" />
-              <input id="codesInami" type="text" placeholder="Codes INAMI" class="p-2 border rounded w-full" />
+              <div class="col-span-full">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Côté :</label>
+                <div class="flex items-center space-x-4">
+                  <label class="inline-flex items-center">
+                    <input type="radio" name="cote" value="Gauche" class="form-radio text-teal-600" id="coteGauche">
+                    <span class="ml-2">Gauche</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="radio" name="cote" value="Droit" class="form-radio text-teal-600" id="coteDroit">
+                    <span class="ml-2">Droit</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="radio" name="cote" value="Bilatéral" class="form-radio text-teal-600" id="coteBilateral">
+                    <span class="ml-2">Bilatéral</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="radio" name="cote" value="Indéterminé" class="form-radio text-teal-600" id="coteIndetermine">
+                    <span class="ml-2">Indéterminé</span>
+                  </label>
+                </div>
+              </div>
+              <input id="membreOpere" type="text" placeholder="Membre opéré" class="p-2 border rounded w-full" />
+              <input id="codesInami" type="text" placeholder="Codes INAMI (ex: Arthroplastie totale de genou)" class="p-2 border rounded w-full" />
             </div>
-            <button onclick="saveIntervention()" class="mt-4 bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700">Enregistrer l’intervention</button>
           </section>
-        </main>
-      </div>
-    </div>
- 
-    <!-- Page Historique (avec graphiques) -->
-    <div id="page-historique" class="hidden p-6 space-y-6">
-      <h2 class="text-xl font-bold text-teal-700">Historique - Graphiques</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <canvas id="chart1M"></canvas>
-        <canvas id="chart1Y"></canvas>
-        <canvas id="chart5Y"></canvas>
-      </div>
-    </div>
- 
-    <!-- Page Statistiques (tableau triable + recherche) -->
-    <div id="page-statistiques" class="hidden p-6 space-y-6">
-      <h2 class="text-xl font-bold text-teal-700">Statistiques personnelles</h2>
-      <input id="searchBox" type="text" placeholder="Rechercher..." onkeyup="filterTable()" class="p-2 border rounded w-full mb-4" />
-      <div class="overflow-x-auto">
-        <table id="statTable" class="min-w-full bg-white border rounded shadow">
-          <thead>
-            <tr class="bg-gray-100 text-gray-700">
-              <th onclick="sortTable(0)">Date opératoire</th>
-              <th onclick="sortTable(1)">Registre national</th>
-              <th onclick="sortTable(2)">Nom</th>
-              <th onclick="sortTable(3)">Prénom</th>
-              <th onclick="sortTable(4)">Anesthésiste</th>
-              <th onclick="sortTable(5)">Assistant</th>
-              <th onclick="sortTable(6)">Type intervention</th>
-              <th onclick="sortTable(7)">Code INAMI</th>
-            </tr>
-          </thead>
-          <tbody id="statTableBody"></tbody>
-        </table>
-      </div>
+
+          <section class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-bold text-teal-700 mb-4">Incapacité de travail</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de semaines :</label>
+                <div class="flex flex-wrap gap-x-4">
+                  <label class="inline-flex items-center"><input type="radio" name="nbSemaines" value="1 semaine" class="form-radio text-teal-600" id="nbSemaines1"><span class="ml-2">1 semaine</span></label>
+                  <label class="inline-flex items-center"><input type="radio" name="nbSemaines" value="2 semaines" class="form-radio text-teal-600" id="nbSemaines2"><span class="ml-2">2 semaines</span></label>
+                  <label class="inline-flex items-center"><input type="radio" name="nbSemaines" value="4 semaines" class="form-radio text-teal-600" id="nbSemaines4"><span class="ml-2">4 semaines</span></label>
+                  <label class="inline-flex items-center"><input type="radio" name="nbSemaines" value="12 semaines" class="form-radio text-teal-600" id="nbSemaines12"><span class="ml-2">12 semaines</span></label>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Arrondir au dimanche :</label>
+                <div class="flex items-center space-x-4">
+                  <label class="inline-flex items-center"><input type="radio" name="arrondirDimanche" value="Oui" class="form-radio text-teal-600" id="arrondirDimancheOui"><span class="ml-2">Oui</span></label>
+                  <label class="inline-flex items-center"><input type="radio" name="arrondirDimanche" value="Non" class="form-radio text-teal-600" id="arrondirDimancheNon"><span class="ml-2">Non</span></label>
+                </div>
+              </div>
+              <input id="dateDebutIncap" type="date" placeholder="Date de début" class="p-2 border rounded w-full" />
+              <input id="dateFinIncap" type="date" placeholder="Date de fin" class="p-2 border rounded w-full" />
+            </div>
+          </section>
+
+          <section class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-bold text-teal-700 mb-4">Prescription de kinésithérapie</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input id="nbSeancesKine" type="number" placeholder="Nombre de séances" class="p-2 border rounded w-full" />
+              <input id="frequenceSeancesKine" type="text" placeholder="Fréquence des séances" class="p-2 border rounded w-full" />
+              <textarea id="consignesKine" placeholder="Consignes éventuelles" rows="3" class="p-2 border rounded w-full col-span-full"></textarea>
+            </div>
+          </section>
+
+          <section class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-bold text-teal-700 mb-4">Soins de plaie</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="col-span-full">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Matériel :</label>
+                <div class="flex flex-wrap gap-x-4">
+                  <label class="inline-flex items-center"><input type="checkbox" id="matPansements" class="form-checkbox text-teal-600"><span class="ml-2">Pansements stériles</span></label>
+                  <label class="inline-flex items-center"><input type="checkbox" id="matIsobetadine" class="form-checkbox text-teal-600"><span class="ml-2">Isobétadine dermique</span></label>
+                  <label class="inline-flex items-center"><input type="checkbox" id="matChlorexidine" class="form-checkbox text-teal-600"><span class="ml-2">Chlorexidine</span></label>
+                  <label class="inline-flex items-center"><input type="checkbox" id="matCompresses" class="form-checkbox text-teal-600"><span class="ml-2">Compresses</span></label>
+                </div>
+              </div>
+              <div class="col-span-full">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Prescription de soins infirmiers :</label>
+                <div class="flex items-center space-x-4">
+                  <label class="inline-flex items-center"><input type="radio" name="soinsInfirmiers" value="Oui" class="form-radio text-teal-600" id="soinsInfirmiersOui"><span class="ml-2">Oui</span></label>
+                  <label class="inline-flex items-center"><input type="radio" name="soinsInfirmiers" value="Non" class="form-radio text-teal-600" id="soinsInfirmiersNon"><span class="ml-2">Non</span></label>
+                </div>
+              </div>
+              <input id="frequenceSoins" type="text" placeholder="Fréquence des soins" class="p-2 border rounded w-full" />
+              <textarea id="descriptionSoins" placeholder="Description des soins" rows="3" class="p-2 border rounded w-full col-span-full"></textarea>
+              <input id="dureeSoins" type="text" placeholder="Durée de nécessité des soins" class="p-2 border rounded w-full" />
+            </div>
+          </section>
+
+          <section class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-bold text-teal-700 mb-4">Prescription de médicaments</h2>
+            <div class="space-y-3">
+              <label class="flex items-center">
+                <input type="checkbox" id="medParacetamol" class="form-checkbox text-teal-600">
+                <span class="ml-2">Paracetamol 1g, 3*/jour, A prendre durant la période douloureuse</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" id="medIbuprofene" class="form-checkbox text-teal-600">
+                <span class="ml-2">Ibuprofène 600 mg, 3*/jour, Pendant 1 semaine. A arrêter si présence de douleurs d’estomac</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" id="medTradonal" class="form-checkbox text-teal-600">
+                <span class="ml-2">Tradonal Odis 50 mg, Selon douleur, Maximum 6*/jour. A prendre en plus du traitement antalgique de base.</span>
+              </label>
+            </div>
+          </section>
+
+          <section class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-bold text-teal-700 mb-4">Imagerie médicale de contrôle</h2>
+            <div class="space-y-6">
+              <div>
+                <h3 class="text-md font-semibold text-gray-700 mb-2">Demande N°1</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input id="imagerie1Quand" type="text" placeholder="Quand faire l’examen" class="p-2 border rounded w-full" />
+                  <input id="imagerie1Type" type="text" placeholder="Type d’examen" class="p-2 border rounded w-full" />
+                  <textarea id="imagerie1InfoClinique" placeholder="Information clinique" rows="2" class="p-2 border rounded w-full col-span-full"></textarea>
+                  <textarea id="imagerie1DemandeDiag" placeholder="Demande diagnostique" rows="2" class="p-2 border rounded w-full col-span-full"></textarea>
+                  <input id="imagerie1MembreCote" type="text" placeholder="Membre et côté" class="p-2 border rounded w-full" />
+                </div>
+              </div>
+              <div>
+                <h3 class="text-md font-semibold text-gray-700 mb-2">Demande N°2</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input id="imagerie2Quand" type="text" placeholder="Quand faire l’examen" class="p-2 border rounded w-full" />
+                  <input id="imagerie2Type" type="text" placeholder="Type d’examen" class="p-2 border rounded w-full" />
+                  <textarea id="imagerie2InfoClinique" placeholder="Information clinique" rows="2" class="p-2 border rounded w-full col-span-full"></textarea>
+                  <textarea id="imagerie2DemandeDiag" placeholder="Demande diagnostique" rows="2" class="p-2 border rounded w-full col-span-full"></textarea>
+                  <input id="imagerie2MembreCote" type="text" placeholder="Membre et côté" class="p-2 border rounded w-full" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-bold text-teal-700 mb-4">Dispositions particulières</h2>
+            <div class="col-span-full">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Prise d’appui :</label>
+              <div class="flex flex-wrap gap-x-4">
+                <label class="inline-flex items-center"><input type="radio" name="priseAppui" value="Appui autorisé immédiatement" class="form-radio text-teal-600" id="appuiImmediat"><span class="ml-2">Appui autorisé immédiatement</span></label>
+                <label class="inline-flex items-center"><input type="radio" name="priseAppui" value="Appui autorisé avec des béquilles" class="form-radio text-teal-600" id="appuiBequlles"><span class="ml-2">Appui autorisé avec des béquilles</span></label>
+                <label class="inline-flex items-center"><input type="radio" name="priseAppui" value="aucun appui autorisé" class="form-radio text-teal-600" id="appuiAucun"><span class="ml-2">aucun appui autorisé</span></label>
+              </div>
+            </div>
+          </section>
+
+          <button onclick="saveIntervention()" class="mt-4 bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700">Enregistrer l'intervention</button>
+        </div>
+
+        <!-- Page Historique (tableau) -->
+        <div id="page-historique" class="hidden p-4 sm:p-6"> <!-- Responsive padding -->
+          <h2 class="text-xl font-bold text-teal-700 mb-4">Historique des interventions</h2>
+          <input id="searchBox" type="text" placeholder="Rechercher..." onkeyup="filterTable()" class="p-2 border rounded w-full mb-4" />
+          <table id="statTable" class="min-w-full bg-white border rounded shadow">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="p-2 text-left text-sm font-semibold text-gray-600 border-b" onclick="sortTable(0)">Date opératoire</th>
+                <th class="p-2 text-left text-sm font-semibold text-gray-600 border-b" onclick="sortTable(1)">Registre national</th>
+                <th class="p-2 text-left text-sm font-semibold text-gray-600 border-b" onclick="sortTable(2)">Nom</th>
+                <th class="p-2 text-left text-sm font-semibold text-gray-600 border-b" onclick="sortTable(3)">Prénom</th>
+                <th class="p-2 text-left text-sm font-semibold text-gray-600 border-b" onclick="sortTable(4)">Anesthésiste</th>
+                <th class="p-2 text-left text-sm font-semibold text-gray-600 border-b" onclick="sortTable(5)">Assistant</th>
+                <th class="p-2 text-left text-sm font-semibold text-gray-600 border-b" onclick="sortTable(6)">Type intervention</th>
+                <th class="p-2 text-left text-sm font-semibold text-gray-600 border-b" onclick="sortTable(7)">Code INAMI</th>
+              </tr>
+            </thead>
+            <tbody id="statTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Page Statistiques (graphiques verticaux) -->
+        <div id="page-statistiques" class="hidden p-4 sm:p-6 space-y-6"> <!-- Responsive padding -->
+          <h2 class="text-xl font-bold text-teal-700">Statistiques personnelles</h2>
+          <canvas id="chart1M"></canvas>
+          <canvas id="chart1Y"></canvas>
+          <canvas id="chart5Y"></canvas>
+        </div>
+
+        <!-- Page Compte -->
+        <div id="page-compte" class="hidden p-4 sm:p-6"> <!-- Responsive padding -->
+          <h2 class="text-xl font-bold text-teal-700 mb-4">Mon compte</h2>
+          <input type="text" id="compteNom" placeholder="Nom" class="p-2 border rounded w-full mb-2" />
+          <input type="text" id="comptePrenom" placeholder="Prénom" class="p-2 border rounded w-full mb-2" />
+          <input type="text" id="compteHopital" placeholder="Hôpital" class="p-2 border rounded w-full mb-2" />
+          <select id="compteSpecialite" class="p-2 border rounded w-full mb-2">
+            <option>Médecine générale</option>
+            <option>Orthopédie</option>
+            <option>Cardiologie</option>
+            <option>Chirurgie</option>
+            <option>Pédiatrie</option>
+            <option>Gynécologie</option>
+          </select>
+          <input type="file" id="compteSignature" class="p-2 border rounded w-full mb-2" />
+          <input type="text" id="compteAdresse" placeholder="Adresse professionnelle" class="p-2 border rounded w-full mb-2" />
+          <button onclick="saveCompte()" class="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700">Enregistrer</button>
+        </div>
+      </main>
     </div>
   </div>
- 
-  <script>
-    let historique = [];
-    let sortDirection = true;
- 
-    const presets = {
-      ptg: { nom: "Dupont", prenom: "Jean", naissance: "1970-01-01", niss: "12345678901", numPatient: "A001", sexe: "Masculin", typeInterv: "PTG" },
-      pth: { nom: "Martin", prenom: "Paul", naissance: "1965-05-12", niss: "23456789012", numPatient: "A002", sexe: "Masculin", typeInterv: "PTH" },
-      lca: { nom: "Durand", prenom: "Luc", naissance: "1985-09-20", niss: "34567890123", numPatient: "A003", sexe: "Masculin", typeInterv: "LCA" },
-      menisque: { nom: "Petit", prenom: "Louis", naissance: "1990-03-15", niss: "45678901234", numPatient: "A004", sexe: "Masculin", typeInterv: "Ménisque" },
-      vierge: { nom: "", prenom: "", naissance: "", niss: "", numPatient: "", sexe: "Sexe", typeInterv: "" }
-    };
- 
-    function login() {
-      document.getElementById('loginScreen').classList.add('hidden');
-      document.getElementById('appScreen').classList.remove('hidden');
-      showPage('interventions');
-    }
- 
-    function showPage(page) {
-      document.getElementById('page-interventions').classList.add('hidden');
-      document.getElementById('page-historique').classList.add('hidden');
-      document.getElementById('page-statistiques').classList.add('hidden');
- 
-      if (page === 'interventions') document.getElementById('page-interventions').classList.remove('hidden');
-      if (page === 'historique') { document.getElementById('page-historique').classList.remove('hidden'); renderCharts(); }
-      if (page === 'statistiques') document.getElementById('page-statistiques').classList.remove('hidden');
-    }
- 
-    function prefill(type) {
-      const data = presets[type];
-      if (data) {
-        document.getElementById('nom').value = data.nom;
-        document.getElementById('prenom').value = data.prenom;
-        document.getElementById('naissance').value = data.naissance;
-        document.getElementById('niss').value = data.niss;
-        document.getElementById('numPatient').value = data.numPatient;
-        document.getElementById('sexe').value = data.sexe;
-        document.getElementById('typeInterv').value = data.typeInterv;
-      }
-    }
- 
-    function saveIntervention() {
-      const intervention = {
-        nom: document.getElementById('nom').value,
-        prenom: document.getElementById('prenom').value,
-        naissance: document.getElementById('naissance').value,
-        niss: document.getElementById('niss').value,
-        numPatient: document.getElementById('numPatient').value,
-        sexe: document.getElementById('sexe').value,
-        dateOp: document.getElementById('dateOp').value,
-        anesthesie: document.getElementById('anesthesie').value,
-        assistants: document.getElementById('assistants').value,
-        typeInterv: document.getElementById('typeInterv').value,
-        codesInami: document.getElementById('codesInami').value
-      };
-      historique.push(intervention);
-      updateStatTable();
-      alert("Intervention enregistrée !");
-    }
- 
-    function updateStatTable() {
-      const body = document.getElementById('statTableBody');
-      body.innerHTML = '';
-      historique.forEach((h, i) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${h.dateOp}</td>
-          <td>${h.niss}</td>
-          <td>${h.nom}</td>
-          <td>${h.prenom}</td>
-          <td>${h.anesthesie}</td>
-          <td>${h.assistants}</td>
-          <td>${h.typeInterv}</td>
-          <td>${h.codesInami}</td>
-        `;
-        row.classList.add('hover:bg-teal-50','cursor-pointer');
-        row.onclick = () => editIntervention(i);
-        body.appendChild(row);
-      });
-    }
- 
-    function editIntervention(index) {
-      const h = historique[index];
-      showPage('interventions');
-      document.getElementById('nom').value = h.nom;
-      document.getElementById('prenom').value = h.prenom;
-      document.getElementById('naissance').value = h.naissance;
-      document.getElementById('niss').value = h.niss;
-      document.getElementById('numPatient').value = h.numPatient;
-      document.getElementById('sexe').value = h.sexe;
-      document.getElementById('dateOp').value = h.dateOp;
-      document.getElementById('anesthesie').value = h.anesthesie;
-      document.getElementById('assistants').value = h.assistants;
-      document.getElementById('typeInterv').value = h.typeInterv;
-      document.getElementById('codesInami').value = h.codesInami;
-    }
- 
-    function filterTable() {
-      const query = document.getElementById('searchBox').value.toLowerCase();
-      const rows = document.querySelectorAll('#statTable tbody tr');
-      rows.forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
-      });
-    }
- 
-    function sortTable(colIndex) {
-      const table = document.getElementById('statTable');
-      const rows = Array.from(table.rows).slice(1);
-      rows.sort((a, b) => {
-        const aText = a.cells[colIndex].innerText;
-        const bText = b.cells[colIndex].innerText;
-        return sortDirection ? aText.localeCompare(bText) : bText.localeCompare(aText);
-      });
-      sortDirection = !sortDirection;
-      const body = document.getElementById('statTableBody');
-      body.innerHTML = '';
-      rows.forEach(r => body.appendChild(r));
-    }
- 
-    function renderCharts() {
-      const ctx1 = document.getElementById('chart1M').getContext('2d');
-      const ctx2 = document.getElementById('chart1Y').getContext('2d');
-      const ctx3 = document.getElementById('chart5Y').getContext('2d');
- 
-      new Chart(ctx1, { type: 'bar', data: { labels: ['S1','S2','S3','S4'], datasets:[{label:'Interventions (1 mois)', data:[3,5,2,4], backgroundColor:'teal'}] }});
- 
-      new Chart(ctx2, { type: 'line', data: { labels:['Jan','Fév','Mar','Avr','Mai'], datasets:[{label:'1 an', data:[10,15,12,20,18], borderColor:'teal', fill:false},{label:'Moyenne', data:[15,15,15,15,15], borderColor:'orange', borderDash:[5,5], fill:false}] }});
- 
-      new Chart(ctx3, { type: 'line', data: { labels:['2020','2021','2022','2023','2024'], datasets:[{label:'5 ans', data:[100,120,90,150,170], borderColor:'teal', fill:false},{label:'Tendance', data:[126,126,126,126,126], borderColor:'orange', borderDash:[5,5], fill:false}] }});
-    }
-  </script>
 </body>
+<script src="./js/general.js"></script>
+<script src="./js/app.js"></script>
+<script src="./js/intervention.js"></script>  
 </html>

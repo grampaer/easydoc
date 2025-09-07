@@ -15,7 +15,7 @@ try {
     // Implémentez ici la logique pour récupérer les interventions depuis la base de données
     // Ceci est un exemple, adaptez-le à votre structure de base de données
     $user_id = $_SESSION['user_id'];
-    $result = $db->query("SELECT * FROM interventions WHERE user_id = $user_id");
+    $result = $db->query("SELECT * FROM Interventions WHERE User_ID = $user_id");
     
     $interventions = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {

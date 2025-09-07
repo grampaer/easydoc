@@ -15,19 +15,18 @@ try {
     $user_id = $_SESSION['user_id'];
     
     // Récupérer les presets depuis la base de données
-    // Adaptez cette requête à votre structure de base de données
-    $result = $db->query("SELECT * FROM presets WHERE user_id = $user_id");
+    $result = $db->query("SELECT * FROM Presets WHERE User_ID = $user_id OR User_ID IS NULL");
     
     $presets = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-        $presets[$row['type']] = [
-            'nom' => $row['nom'],
-            'prenom' => $row['prenom'],
-            'naissance' => $row['naissance'],
-            'niss' => $row['niss'],
-            'numPatient' => $row['num_patient'],
-            'sexe' => $row['sexe'],
-            'typeInterv' => $row['type_interv']
+        $presets[$row['Type']] = [
+            'nom' => $row['Nom'],
+            'prenom' => $row['Prenom'],
+            'naissance' => $row['Naissance'],
+            'niss' => $row['NISS'],
+            'numPatient' => $row['NumPatient'],
+            'sexe' => $row['Sexe'],
+            'typeInterv' => $row['TypeInterv']
         ];
     }
     

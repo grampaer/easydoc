@@ -1,86 +1,57 @@
-async function saveIntervention() {
-    const intervention = {
-        // Patient Identification
-        nom: document.getElementById('nom').value,
-        prenom: document.getElementById('prenom').value,
-        naissance: document.getElementById('naissance').value,
-        niss: document.getElementById('niss').value,
-        numPatient: document.getElementById('numPatient').value,
-        sexe: getRadioValue('sexe'),
+async function loadInterventionTemplate(templateType) {
+    // Charger le template d'intervention depuis la base de données
+    console.log('Chargement du template:', templateType);
+    
+    // Enlever la classe 'selected' de tous les éléments du menu
+    const menuItems = document.querySelectorAll('#sidebar nav a');
+    menuItems.forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Ajouter la classe 'selected' à l'élément cliqué
+    const clickedItem = document.querySelector(`#sidebar nav a[onclick="loadInterventionTemplate('${templateType}')"]`);
+    if (clickedItem) {
+        clickedItem.classList.add('selected');
+    }
+    
+    // Vider le formulaire
+    clearInterventionForm();
 
-        // Intervention
-        dateOp: document.getElementById('dateOp').value,
-        anesthesie: document.getElementById('anesthesie').value,
-        typeAnesthesie: document.getElementById('typeAnesthesie').value,
-        assistants: document.getElementById('assistants').value,
-        infirmiers: document.getElementById('infirmiers').value,
-        internes: document.getElementById('internes').value,
-        typeInterv: document.getElementById('typeInterv').value,
-        cote: getRadioValue('cote'),
-        membreOpere: document.getElementById('membreOpere').value,
-        codesInami: document.getElementById('codesInami').value,
-
-        // Incapacité de travail
-        nbSemaines: getRadioValue('nbSemaines'),
-        arrondirDimanche: getRadioValue('arrondirDimanche'),
-        dateDebutIncap: document.getElementById('dateDebutIncap').value,
-        dateFinIncap: document.getElementById('dateFinIncap').value,
-
-        // Prescription de kinésithérapie
-        nbSeancesKine: document.getElementById('nbSeancesKine').value,
-        frequenceSeancesKine: document.getElementById('frequenceSeancesKine').value,
-        consignesKine: document.getElementById('consignesKine').value,
-
-        // Soins de plaie
-        matPansements: getCheckboxValue('matPansements'),
-        matIsobetadine: getCheckboxValue('matIsobetadine'),
-        matChlorexidine: getCheckboxValue('matChlorexidine'),
-        matCompresses: getCheckboxValue('matCompresses'),
-        soinsInfirmiers: getRadioValue('soinsInfirmiers'),
-        frequenceSoins: document.getElementById('frequenceSoins').value,
-        descriptionSoins: document.getElementById('descriptionSoins').value,
-        dureeSoins: document.getElementById('dureeSoins').value,
-
-        // Prescription de médicaments
-        medParacetamol: getCheckboxValue('medParacetamol'),
-        medIbuprofene: getCheckboxValue('medIbuprofene'),
-        medTradonal: getCheckboxValue('medTradonal'),
-
-        // Imagerie médicale de controle
-        imagerie1Quand: document.getElementById('imagerie1Quand').value,
-        imagerie1InfoClinique: document.getElementById('imagerie1InfoClinique').value,
-        imagerie1DemandeDiag: document.getElementById('imagerie1DemandeDiag').value,
-        imagerie1Type: document.getElementById('imagerie1Type').value,
-        imagerie1MembreCote: document.getElementById('imagerie1MembreCote').value,
-        imagerie2Quand: document.getElementById('imagerie2Quand').value,
-        imagerie2InfoClinique: document.getElementById('imagerie2InfoClinique').value,
-        imagerie2DemandeDiag: document.getElementById('imagerie2DemandeDiag').value,
-        imagerie2Type: document.getElementById('imagerie2Type').value,
-        imagerie2MembreCote: document.getElementById('imagerie2MembreCote').value,
-
-        // Dispositions particulière
-        priseAppui: getRadioValue('priseAppui')
-    };
+    // Afficher la page interventions
+    showPage('interventions');
 
     try {
-        const response = await fetch('save_intervention.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(intervention)
-        });
-
-        if (!response.ok) throw new Error('Erreur lors de la sauvegarde');
-
+        const response = await fetch(`get_intervention_template.php?type=${encodeURIComponent(templateType)}`);
+        if (!response.ok) throw new Error('Erreur réseau');
         const result = await response.json();
-        historique.push(intervention);
-        updateStatTable();
-        clearInterventionForm();
-        alert("Intervention enregistrée (ID: " + result.id + ")");
+        
+        if (result.success && result.template) {
+            const template = result.template;
+            // Remplir le formulaire avec les données du template
+            if (template.typeInterv) document.getElementById('typeInterv').value = template.typeInterv;
+            if (template.codesInami) document.getElementById('codesInami').value = template.codesInami;
+            if (template.membreOpere) document.getElementById('membreOpere').value = template.membreOpere;
+            if (template.typeAnesthesie) document.getElementById('typeAnesthesie').value = template.typeAnesthesie;
+            if (template.nbSemaines) setRadioValue('nbSemaines', template.nbSemaines);
+            if (template.priseAppui) setRadioValue('priseAppui', template.priseAppui);
+            if (template.matPansements !== undefined) setCheckboxValue('matPansements', template.matPansements);
+            if (template.matIsobetadine !== undefined) setCheckboxValue('matIsobetadine', template.matIsobetadine);
+            if (template.medParacetamol !== undefined) setCheckboxValue('medParacetamol', template.medParacetamol);
+            if (template.medIbuprofene !== undefined) setCheckboxValue('medIbuprofene', template.medIbuprofene);
+            if (template.nbSeancesKine) document.getElementById('nbSeancesKine').value = template.nbSeancesKine;
+            if (template.frequenceSeancesKine) document.getElementById('frequenceSeancesKine').value = template.frequenceSeancesKine;
+            if (template.consignesKine) document.getElementById('consignesKine').value = template.consignesKine;
+            if (template.imagerie1Type) document.getElementById('imagerie1Type').value = template.imagerie1Type;
+            if (template.imagerie1Quand) document.getElementById('imagerie1Quand').value = template.imagerie1Quand;
+            if (template.imagerie1InfoClinique) document.getElementById('imagerie1InfoClinique').value = template.imagerie1InfoClinique;
+            if (template.imagerie1DemandeDiag) document.getElementById('imagerie1DemandeDiag').value = template.imagerie1DemandeDiag;
+            if (template.imagerie1MembreCote) document.getElementById('imagerie1MembreCote').value = template.imagerie1MembreCote;
+        } else {
+            console.log('Template vierge ou non trouvé');
+        }
     } catch (error) {
-        console.error('Erreur:', error);
-        alert(error.message || "Erreur lors de la sauvegarde");
+        console.error('Erreur lors du chargement du template:', error);
+        alert('Erreur lors du chargement du template');
     }
 }
 
