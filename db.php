@@ -10,10 +10,10 @@ class MyDB
     
     function __construct()
     {
-        $host = 'localhost';
-        $dbname = 'easydb';
-        $username = 'easyuser';
-        $password = 'easypassword';
+        $host = 'ID475574_Izidoc.db.webhosting.be';
+        $dbname = 'ID475574_Izidoc';
+        $username = 'ID475574_Izidoc';
+        $password = 'izidocpassword#1';
         
         try {
             $this->pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
