@@ -4,15 +4,23 @@ if (!session_id()) {
     session_start();
 }
 
-class MyDB extends SQLite3
+class MyDB
 {
     private $pdo;
     
     function __construct()
     {
-        $this->open('easydb.db');
-        $this->pdo = new PDO('sqlite:./easydb.db');
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $host = 'localhost';
+        $dbname = 'easydb';
+        $username = 'easyuser';
+        $password = 'easypassword';
+        
+        try {
+            $this->pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            die("Erreur de connexion: " . $e->getMessage());
+        }
     }
 
     function getInformationHisByMonth(): array
@@ -23,14 +31,14 @@ class MyDB extends SQLite3
             return [];
         }
         
-        // Requête pour compter les interventions par mois
+        // Requête pour compter les interventions par mois (adaptée pour MySQL)
         $stmt = $this->pdo->prepare("
             SELECT 
-                strftime('%Y-%m', DateOp) as month,
+                DATE_FORMAT(DateOp, '%Y-%m') as month,
                 COUNT(*) as count
             FROM Interventions 
             WHERE User_ID = :user_id 
-            GROUP BY strftime('%Y-%m', DateOp)
+            GROUP BY DATE_FORMAT(DateOp, '%Y-%m')
             ORDER BY month
         ");
         $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
