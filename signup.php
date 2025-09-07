@@ -14,6 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($input['email'] ?? '');
     $password = $input['password'] ?? '';
     $specialite = trim($input['specialite'] ?? '');
+    $hopital = trim($input['hopital'] ?? '');
+    $adresse = trim($input['adresse'] ?? '');
     
     // Valider les données
     if (empty($nom) || empty($prenom) || empty($email) || empty($password) || empty($specialite)) {

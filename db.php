@@ -69,8 +69,8 @@ class MyDB
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO Users (UserName, Email, Password, FirstName, LastName, INAME) 
-                                        VALUES (:username, :email, :password, :prenom, :nom, :specialite)");
+            $stmt = $this->pdo->prepare("INSERT INTO Users (UserName, Email, Password, FirstName, LastName, INAME, Hopital, Adresse) 
+                                        VALUES (:username, :email, :password, :prenom, :nom, :specialite, :hopital, :adresse)");
            
             return $stmt->execute([
                 ':username' => $username,
@@ -78,10 +78,37 @@ class MyDB
                 ':password' => $hashedPassword,
                 ':prenom' => $prenom,
                 ':nom' => $nom,
-                ':specialite' => $specialite
+                ':specialite' => $specialite,
+                ':hopital' => '',
+                ':adresse' => ''
             ]);
         } catch (PDOException $e) {
             error_log("Erreur insertUser: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    function getUserInfo(int $user_id): ?array
+    {
+        $stmt = $this->pdo->prepare("SELECT FirstName, LastName, INAME, Hopital, Adresse FROM Users WHERE ID = :user_id");
+        $stmt->execute([':user_id' => $user_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    function updateUserInfo(int $user_id, string $nom, string $prenom, string $specialite, string $hopital, string $adresse): bool
+    {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE Users SET LastName = :nom, FirstName = :prenom, INAME = :specialite, Hopital = :hopital, Adresse = :adresse WHERE ID = :user_id");
+            return $stmt->execute([
+                ':nom' => $nom,
+                ':prenom' => $prenom,
+                ':specialite' => $specialite,
+                ':hopital' => $hopital,
+                ':adresse' => $adresse,
+                ':user_id' => $user_id
+            ]);
+        } catch (PDOException $e) {
+            error_log("Erreur updateUserInfo: " . $e->getMessage());
             return false;
         }
     }
