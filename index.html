@@ -76,6 +76,22 @@
         <input id="username" type="text" placeholder="Nom d'utilisateur" class="w-full p-2 border rounded" />
         <input id="password" type="password" placeholder="Mot de passe" class="w-full p-2 border rounded" />
         <button onclick="login()" class="w-full bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700">Se connecter</button>
+        
+        <!-- Séparateur -->
+        <div class="flex items-center my-4">
+          <div class="flex-grow border-t border-gray-300"></div>
+          <div class="mx-4 text-gray-500">ou</div>
+          <div class="flex-grow border-t border-gray-300"></div>
+        </div>
+        
+        <!-- Bouton itsme -->
+        <button onclick="loginWithItsme()" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22.5C6.201 22.5 1.5 17.799 1.5 12S6.201 1.5 12 1.5 22.5 6.201 22.5 12 17.799 22.5 12 22.5zm5.5-10.5c0 3.033-2.467 5.5-5.5 5.5S6.5 15.033 6.5 12 8.967 6.5 12 6.5s5.5 2.467 5.5 5.5z"/>
+          </svg>
+          Se connecter avec itsme
+        </button>
+        
         <div class="flex justify-between text-sm text-teal-600 mt-4">
           <a href="#" onclick="showAuthPage('createAccount')">Créer un compte</a>
           <a href="#" onclick="showAuthPage('forgotPassword')">Mot de passe oublié ?</a>

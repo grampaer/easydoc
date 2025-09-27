@@ -273,3 +273,30 @@ async function saveCompte() {
 function logout() {
     window.location.href = 'logout.php';
 }
+
+function loginWithItsme() {
+    // Rediriger vers le endpoint d'authentification itsme
+    // Note: Vous devez remplacer CLIENT_ID et REDIRECT_URI par vos valeurs réelles
+    const clientId = 'VOTRE_CLIENT_ID';
+    const redirectUri = encodeURIComponent('https://votre-domaine.com/itsme_callback.php');
+    const scope = encodeURIComponent('openid service:name');
+    const state = generateRandomString(); // Pour la protection CSRF
+    
+    // Stocker le state dans le sessionStorage pour la vérification plus tard
+    sessionStorage.setItem('itsme_oauth_state', state);
+    
+    const itsmeAuthUrl = `https://connect.itsme.be/oidc/authorize?` +
+        `client_id=${clientId}` +
+        `&redirect_uri=${redirectUri}` +
+        `&response_type=code` +
+        `&scope=${scope}` +
+        `&state=${state}`;
+    
+    window.location.href = itsmeAuthUrl;
+}
+
+function generateRandomString() {
+    const array = new Uint8Array(16);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+}
