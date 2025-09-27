@@ -2,7 +2,78 @@
 function backToLogin() {
     document.getElementById('page-createAccount').classList.add('hidden');
     document.getElementById('page-forgotPassword').classList.add('hidden');
+    document.getElementById('page-resetPassword').classList.add('hidden');
     document.getElementById('loginScreen').classList.remove('hidden');
+}
+
+async function requestPasswordReset() {
+    const email = document.getElementById('resetEmail').value;
+    const messageDiv = document.getElementById('resetMessage');
+    
+    try {
+        const response = await fetch('request_password_reset.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            messageDiv.style.color = 'green';
+            messageDiv.textContent = result.message + ' ' + (result.reset_link || '');
+        } else {
+            throw new Error(result.message || 'Erreur lors de la demande de réinitialisation');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = error.message;
+    }
+}
+
+async function resetPassword() {
+    const token = document.getElementById('resetToken').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const messageDiv = document.getElementById('resetPasswordMessage');
+    
+    if (newPassword !== confirmPassword) {
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = 'Les mots de passe ne correspondent pas';
+        return;
+    }
+    
+    try {
+        const response = await fetch('reset_password.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                token, 
+                password: newPassword 
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            messageDiv.style.color = 'green';
+            messageDiv.textContent = result.message;
+            setTimeout(() => {
+                backToLogin();
+            }, 2000);
+        } else {
+            throw new Error(result.message || 'Erreur lors de la réinitialisation');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = error.message;
+    }
 }
 
 async function login() {
@@ -72,13 +143,28 @@ async function createAccount() {
     }
 }
 
-function loadCompte() {
-    document.getElementById('compteNom').value = localStorage.getItem('compteNom') || '';
-    document.getElementById('comptePrenom').value = localStorage.getItem('comptePrenom') || '';
-    document.getElementById('compteHopital').value = localStorage.getItem('compteHopital') || '';
-    document.getElementById('compteSpecialite').value = localStorage.getItem('compteSpecialite') || 'Médecine générale';
-    document.getElementById('compteAdresse').value = localStorage.getItem('compteAdresse') || '';
-    // Note: Signature file cannot be reloaded directly due to browser security restrictions.
+async function loadCompte() {
+    try {
+        const response = await fetch('get_compte.php');
+        if (!response.ok) {
+            throw new Error('Erreur réseau');
+        }
+        const result = await response.json();
+        
+        if (result.success) {
+            const data = result.data;
+            document.getElementById('compteNom').value = data.nom || '';
+            document.getElementById('comptePrenom').value = data.prenom || '';
+            document.getElementById('compteHopital').value = data.hopital || '';
+            document.getElementById('compteSpecialite').value = data.specialite || 'Médecine générale';
+            document.getElementById('compteAdresse').value = data.adresse || '';
+        } else {
+            throw new Error(result.message || 'Erreur lors du chargement des informations du compte');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert(error.message || 'Échec du chargement des informations du compte');
+    }
 }
 
 async function applyPreset(presetType) {
@@ -149,11 +235,41 @@ async function loadPresets() {
     }
 }
 
-function saveCompte() {
-    localStorage.setItem('compteNom', document.getElementById('compteNom').value);
-    localStorage.setItem('comptePrenom', document.getElementById('comptePrenom').value);
-    localStorage.setItem('compteHopital', document.getElementById('compteHopital').value);
-    localStorage.setItem('compteSpecialite', document.getElementById('compteSpecialite').value);
-    localStorage.setItem('compteAdresse', document.getElementById('compteAdresse').value);
-    alert('Informations du compte enregistrées !');
+async function saveCompte() {
+    const nom = document.getElementById('compteNom').value;
+    const prenom = document.getElementById('comptePrenom').value;
+    const hopital = document.getElementById('compteHopital').value;
+    const specialite = document.getElementById('compteSpecialite').value;
+    const adresse = document.getElementById('compteAdresse').value;
+    
+    try {
+        const response = await fetch('save_compte.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nom,
+                prenom,
+                hopital,
+                specialite,
+                adresse
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Informations du compte enregistrées !');
+        } else {
+            throw new Error(result.message || 'Erreur lors de la sauvegarde');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert(error.message || 'Échec de la sauvegarde des informations');
+    }
+}
+
+function logout() {
+    window.location.href = 'logout.php';
 }

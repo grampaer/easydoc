@@ -14,7 +14,13 @@ class MyDB
         $dbname = 'ID475574_Izidoc';
         $username = 'ID475574_Izidoc';
         $password = 'izidocpassword#1';
-        
+
+            // Information locale
+        $host = 'localhost';
+        $dbname = 'easydb';
+        $username = 'easyuser';
+        $password = 'easypassword';
+
         try {
             $this->pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

@@ -122,6 +122,17 @@ try {
         $stmt->execute($preset);
     }
 
+    // Création de la table PasswordReset
+    $pdo->exec("
+    CREATE TABLE IF NOT EXISTS PasswordReset (
+        ID INT AUTO_INCREMENT PRIMARY KEY,
+        Email VARCHAR(255) NOT NULL,
+        Token VARCHAR(255) NOT NULL,
+        Expiry DATETIME NOT NULL,
+        CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ");
+
     echo "Base de données MariaDB initialisée avec succès!";
 } catch (PDOException $e) {
     die("Erreur: " . $e->getMessage());

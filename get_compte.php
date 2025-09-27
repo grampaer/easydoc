@@ -16,11 +16,11 @@ if ($userInfo) {
     echo json_encode([
         'success' => true,
         'data' => [
-            'nom' => $userInfo['LastName'],
-            'prenom' => $userInfo['FirstName'],
-            'specialite' => $userInfo['INAME'],
-            'hopital' => $userInfo['Hopital'],
-            'adresse' => $userInfo['Adresse']
+            'nom' => $userInfo['LastName'] ?? '',
+            'prenom' => $userInfo['FirstName'] ?? '',
+            'specialite' => $userInfo['INAME'] ?? '',
+            'hopital' => $userInfo['Hopital'] ?? '',
+            'adresse' => $userInfo['Adresse'] ?? ''
         ]
     ]);
 } else {

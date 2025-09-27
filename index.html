@@ -125,11 +125,12 @@
           </svg>
       </button>
       <div class="text-2xl font-extrabold text-teal-600">EASYDOC</div>
-      <nav class="space-x-6 text-sm font-medium text-gray-600 hidden md:flex"> <!-- Hidden on small, shown on medium+ -->
+      <nav class="space-x-6 text-sm font-medium text-gray-600 hidden md:flex items-center"> <!-- Hidden on small, shown on medium+ -->
         <a href="#" onclick="showPage('interventions')" class="hover:text-teal-600">Interventions</a>
         <a href="#" onclick="showPage('historique')" class="hover:text-teal-600">Historique</a>
         <a href="#" onclick="showPage('statistiques')" class="hover:text-teal-600">Statistiques</a>
         <a href="#" onclick="showPage('compte')" class="hover:text-teal-600">Compte</a>
+        <button onclick="logout()" class="text-gray-600 hover:text-teal-600">Déconnexion</button>
       </nav>
       <div class="md:hidden"></div> <!-- Placeholder to balance flex-between on small screens -->
     </header>

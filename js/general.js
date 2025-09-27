@@ -414,3 +414,14 @@ window.addEventListener('resize', () => {
             }
         }
     });
+
+// Vérifier les paramètres d'URL pour la réinitialisation du mot de passe
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const resetToken = urlParams.get('token');
+    if (resetToken) {
+        document.getElementById('resetToken').value = resetToken;
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('page-resetPassword').classList.remove('hidden');
+    }
+});
