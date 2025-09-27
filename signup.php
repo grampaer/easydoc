@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $nom = trim($input['nom'] ?? '');
     $prenom = trim($input['prenom'] ?? '');
+    $username = trim($input['username'] ?? '');
     $email = trim($input['email'] ?? '');
     $password = $input['password'] ?? '';
     $specialite = trim($input['specialite'] ?? '');
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $adresse = trim($input['adresse'] ?? '');
     
     // Valider les données
-    if (empty($nom) || empty($prenom) || empty($email) || empty($password) || empty($specialite)) {
+    if (empty($nom) || empty($prenom) || empty($username) || empty($email) || empty($password) || empty($specialite)) {
         echo json_encode(['success' => false, 'message' => 'Tous les champs sont obligatoires']);
         exit;
     }
@@ -27,9 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['success' => false, 'message' => 'Le mot de passe doit contenir au moins 5 caractères']);
         exit;
     }
-    
-    // Créer un nom d'utilisateur à partir du nom et prénom
-    $username = strtolower($prenom . '.' . $nom);
     
     // Vérifier si l'utilisateur existe déjà en utilisant la fonction de la classe MyDB
     $db = new MyDB();

@@ -6,6 +6,22 @@ function backToLogin() {
     document.getElementById('loginScreen').classList.remove('hidden');
 }
 
+function showAuthPage(page) {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('page-createAccount').classList.add('hidden');
+    document.getElementById('page-forgotPassword').classList.add('hidden');
+
+    if (page === 'createAccount') {
+        document.getElementById('page-createAccount').classList.remove('hidden');
+        // Préremplir l'email avec une valeur par défaut
+        const emailInput = document.getElementById('newEmail');
+        if (emailInput && !emailInput.value) {
+            emailInput.value = 'exemple@email.com';
+        }
+    }
+    if (page === 'forgotPassword') document.getElementById('page-forgotPassword').classList.remove('hidden');
+}
+
 async function requestPasswordReset() {
     const email = document.getElementById('resetEmail').value;
     const messageDiv = document.getElementById('resetMessage');
@@ -110,6 +126,7 @@ async function login() {
 async function createAccount() {
     const nom = document.getElementById('newNom').value;
     const prenom = document.getElementById('newPrenom').value;
+    const username = document.getElementById('newUsername').value;
     const email = document.getElementById('newEmail').value;
     const password = document.getElementById('newPassword').value;
     const specialite = document.getElementById('newSpecialite').value;
@@ -123,6 +140,7 @@ async function createAccount() {
             body: JSON.stringify({
                 nom,
                 prenom,
+                username,
                 email,
                 password,
                 specialite
